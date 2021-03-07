@@ -3,7 +3,9 @@ Ubiquiti UniFi Camera Image Archiver & FTP Uploader - A Utility to archive & FTP
 - By Phoenix125 | http://www.Phoenix125.com | http://discord.gg/EU7pzPs | kim@kim125.com
 - Written in AutoIT v3.3.14.5 using SciTE4AutoIT3
 
-FEATURES
+----------
+ FEATURES
+----------
 • Create archives of Ubiquiti UniFi cameras (or any camera with http snapshot).
 • Upload images via FTP.  Works with Wunderground.
 • Resize images for upload and archive.
@@ -13,15 +15,30 @@ FEATURES
 	○ Save Folder		○ Upload folder		○ Independent archive and FTP frequency
 • Logs of archives and FTPs.
 
-INSTRUCTIONS
+--------------
+ INSTRUCTIONS
+--------------
 • Run UniFiCameraImageArchiverFTPUploader_vX.exe
 • Config window will open.  Set parameters.
 • Click on Camera Number to change camera.
 • Hove mouse over any option for details.
 • To enable UniFi Camera Snapshot URL, see See ReadMe.PDF at http://www.phoenix125.com/share/unificameraimagearchiverftpuploader/ReadMe.pdf
 
+----------------
+ DOWNLOAD LINKS
+----------------
+Latest Version: http://www.phoenix125.com/share/unificameraimagearchiverftpuploader/UniFiCameraImageArchiverFTPUploader.zip
+Previous Versions: http://www.phoenix125.com/share/unificameraimagearchiverftpuploader/archives
+Source Code (AutoIT): http://www.phoenix125.com/share/unificameraimagearchiverftpuploader/UniFiCameraImageArchiverFTPUploader.au3
+GitHub: https://github.com/phoenix125/UniFiCameraImageArchiverFTPUploader
+Readme.txt: http://www.phoenix125.com/share/unificameraimagearchiverftpuploader/ReadMe.pdf
 
-REVISION HISTORY
+Website: http://www.Phoenix125.com
+Discord: http://discord.gg/EU7pzPs
+
+------------------
+ REVISION HISTORY
+------------------
 2021-03-06 v1.2 Config GUI!
 - Added: Config GUI
 - Added: Separate options for archiving and uploading full size and resized images
