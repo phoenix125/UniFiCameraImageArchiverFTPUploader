@@ -273,7 +273,7 @@ Func ReadIni()
 	Global $aUtilCheckForUpdateYN = IniRead($aIniFile, " --------------- " & StringUpper($aUtilName) & " OPTIONS --------------- ", "Check for updates at program start? (yes/no) ###", "yes")
 	Global $aPreviousNumberOfEntries = IniRead($aUtilCFGFile, "CFG", "Previous number of entries ###", $iniCheck)
 	If $aNumberOfEntries = $iniCheck Then
-		$aNumberOfEntries = 25
+		$aNumberOfEntries = 2
 		$tChanged = "new"
 	Else
 		If $aNumberOfEntries <> $aPreviousNumberOfEntries Then $tChanged = "changed"
