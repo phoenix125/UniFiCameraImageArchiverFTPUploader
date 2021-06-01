@@ -15,12 +15,12 @@
 
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Icon=Resources\phoenixtray.ico
-#AutoIt3Wrapper_Outfile=Builds\UniFiCameraImageArchiverFTPUploader_v1.2.exe
+#AutoIt3Wrapper_Outfile=Builds\UniFiCameraImageArchiverFTPUploader_v1.3.exe
 #AutoIt3Wrapper_Res_Comment=UniFi Camera Image Archiver & FTP Uploader by Phoenix125.com
 #AutoIt3Wrapper_Res_Description=UniFi Camera Image Archiver & FTP Uploader
-#AutoIt3Wrapper_Res_Fileversion=1.2
+#AutoIt3Wrapper_Res_Fileversion=1.3
 #AutoIt3Wrapper_Res_ProductName=UniFi Camera Image Archiver & FTP Uploader
-#AutoIt3Wrapper_Res_ProductVersion=1.2
+#AutoIt3Wrapper_Res_ProductVersion=1.3
 #AutoIt3Wrapper_Res_CompanyName=http://www.Phoenix125.com
 #AutoIt3Wrapper_Res_LegalCopyright=http://www.Phoenix125.com
 #AutoIt3Wrapper_Res_Language=1033
@@ -58,7 +58,7 @@ Global $cGreenLime = "0x00FF00"
 
 Opt("GUIOnEventMode", 1)
 Local $tExit = False
-Global $aUtilVersion = "v1.2"
+Global $aUtilVersion = "v1.3"
 Global $aUtilVer = $aUtilVersion
 Global $aUtilVerNumber = 0 ; New number assigned for each config file change. Used to write temp update script so that users are not forced to update config.
 Global $aIniFile = @ScriptDir & "\" & $aUtilName & ".ini"
@@ -1339,7 +1339,7 @@ Func C_I_CameraURLChange()
 	Local $tTxt = GUICtrlRead($C_I_CameraURL)
 	If $tTxt <> "" Then
 		$xURL[$aLastCam] = $tTxt
-		IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "Image URL from camera (ex. http://192.168.1.5/snap.jpeg) ###", $xURL[$x])
+		IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "Image URL from camera (ex. http://192.168.1.5/snap.jpeg) ###", $xURL[$aLastCam])
 	EndIf
 EndFunc   ;==>C_I_CameraURLChange
 Func C_I_CreateFullSizeFilenameChange()

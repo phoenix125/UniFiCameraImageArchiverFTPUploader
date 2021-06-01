@@ -1,3 +1,2 @@
-v1.2^v1.2 Added Config GUI!
-- Added: Config GUI
-- Added: Separate options for archiving and uploading full size and resized images
+v1.3^v1.3 Fixed Line 16397 Error
+- Fixed: Line 16397 error when changing camera URL
