@@ -15,12 +15,12 @@
 
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Icon=Resources\phoenixtray.ico
-#AutoIt3Wrapper_Outfile=Builds\UniFiCameraImageArchiverFTPUploader_v1.3.exe
+#AutoIt3Wrapper_Outfile=Builds\UniFiCameraImageArchiverFTPUploader_v1.4.exe
 #AutoIt3Wrapper_Res_Comment=UniFi Camera Image Archiver & FTP Uploader by Phoenix125.com
 #AutoIt3Wrapper_Res_Description=UniFi Camera Image Archiver & FTP Uploader
-#AutoIt3Wrapper_Res_Fileversion=1.3
+#AutoIt3Wrapper_Res_Fileversion=1.4
 #AutoIt3Wrapper_Res_ProductName=UniFi Camera Image Archiver & FTP Uploader
-#AutoIt3Wrapper_Res_ProductVersion=1.3
+#AutoIt3Wrapper_Res_ProductVersion=1.4
 #AutoIt3Wrapper_Res_CompanyName=http://www.Phoenix125.com
 #AutoIt3Wrapper_Res_LegalCopyright=http://www.Phoenix125.com
 #AutoIt3Wrapper_Res_Language=1033
@@ -58,7 +58,7 @@ Global $cGreenLime = "0x00FF00"
 
 Opt("GUIOnEventMode", 1)
 Local $tExit = False
-Global $aUtilVersion = "v1.3"
+Global $aUtilVersion = "v1.4"
 Global $aUtilVer = $aUtilVersion
 Global $aUtilVerNumber = 0 ; New number assigned for each config file change. Used to write temp update script so that users are not forced to update config.
 Global $aIniFile = @ScriptDir & "\" & $aUtilName & ".ini"
@@ -216,7 +216,7 @@ Do
 				Local $tTimerUpload = TimerInit()
 				If (StringInStr($xFTPUploadType[$xCam], "B") Or StringInStr($xFTPUploadType[$xCam], "F")) Then
 					If $xFTPURL[$xCam] <> "" Then
-						Local $tError = FTPFiles($aFolderImage & "\" & $xFileNameOriginal[$xCam], $xFTPFolder[$xCam], $xFTPURL[$xCam], $xUserID[$xCam], $xPwd[$xCam])
+						Local $tError = FTPFiles($aFolderImage & "\" & $xFileNameOriginal[$xCam], $xFTPFolder[$xCam], $xFTPURL[$xCam], $xUserID[$xCam], $xPwd[$xCam], $xFTPPort[$xCam])
 						$tDiffSec = StringFormat("%.2f", TimerDiff($tTimerUpload) / 1000, 2)
 						If $tError = 0 Then
 							If $aLogLevel = 1 Then LogWrite("[OK] Code[" & $tError & "] Time[" & $tDiffSec & "s] Upload successful [" & $xFileNameOriginal[$xCam] & "] FTP[" & $xFTPURL[$xCam] & "] UserID[" & $xUserID[$xCam] & "] Pwd[" & $xPwd[$xCam] & "]")
@@ -227,7 +227,7 @@ Do
 				EndIf
 				If (StringInStr($xFTPUploadType[$xCam], "B") Or StringInStr($xFTPUploadType[$xCam], "R")) And $xResizeImageYN[$xCam] = "yes" Then
 					If $xFTPURL[$xCam] <> "" Then
-						Local $tError = FTPFiles($aFolderImage & "\" & $xFileNameResized[$xCam], $xFTPFolder[$xCam], $xFTPURL[$xCam], $xUserID[$xCam], $xPwd[$xCam])
+						Local $tError = FTPFiles($aFolderImage & "\" & $xFileNameResized[$xCam], $xFTPFolder[$xCam], $xFTPURL[$xCam], $xUserID[$xCam], $xPwd[$xCam], $xFTPPort[$xCam])
 						$tDiffSec = StringFormat("%.2f", TimerDiff($tTimerUpload) / 1000, 2)
 						If $tError = 0 Then
 							If $aLogLevel = 1 Then LogWrite("[OK] Code[" & $tError & "] Time[" & $tDiffSec & "s] Upload successful [" & $xFileNameResized[$xCam] & "] FTP[" & $xFTPURL[$xCam] & "] UserID[" & $xUserID[$xCam] & "] Pwd[" & $xPwd[$xCam] & "]")
@@ -300,6 +300,7 @@ Func ReadIni()
 	Global $xFileNameResized[$aNumberOfEntries]
 	Global $xUserID[$aNumberOfEntries]
 	Global $xPwd[$aNumberOfEntries]
+	Global $xFTPPort[$aNumberOfEntries]
 	Global $xFTPURL[$aNumberOfEntries]
 	Global $xFTPFolder[$aNumberOfEntries]
 	Global $xResizeImageYN[$aNumberOfEntries]
@@ -320,6 +321,7 @@ Func ReadIni()
 		$xFTPFolder[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "FTP folder (for Wunderground, leave blank) ###", "")
 		$xUserID[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "FTP userName (for Wunderground, use camera ID, ex. WU_7883133CAM3) ###", "")
 		$xPwd[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "FTP password (for Wunderground, use key, ex. QqOQqKRy) ###", "")
+		$xFTPPort[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "FTP port ###", "21")
 		$xResizeImageYN[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Create resize image? (yes/no) ###", "no")
 		$xResizeImageSize[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Resize image size: (ex. 1280x720) ###", "853x480")
 		$xSaveType[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Archive image: (F)ull-size (R)esized (B)oth (N)one (FRBN)###", "F")
@@ -362,6 +364,7 @@ Func WriteINI()
 		IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "FTP folder (for Wunderground, leave blank) ###", $xFTPFolder[$x])
 		IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "FTP userName (for Wunderground, use camera ID, ex. WU_7883133CAM3) ###", $xUserID[$x])
 		IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "FTP password (for Wunderground, use key, ex. QqOQqKRy) ###", $xPwd[$x])
+		IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "FTP port ###", $xFTPPort[$x])
 		IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Create resize image? (yes/no) ###", $xResizeImageYN[$x])
 		IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Resize image size: (ex. 1280x720) ###", $xResizeImageSize[$x])
 		IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Archive image: (F)ull-size (R)esized (B)oth (N)one (FRBN)###", $xSaveType[$x])
@@ -370,9 +373,9 @@ Func WriteINI()
 		IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Save Folder for archived image(s) ###", $xSaveFolder[$x])
 	Next
 EndFunc   ;==>WriteINI
-Func FTPFiles($tFile, $tFTP_Folder, $tFTP_URL, $tFTP_UserName, $tFPT_Pwd)
+Func FTPFiles($tFile, $tFTP_Folder, $tFTP_URL, $tFTP_UserName, $tFPT_Pwd, $tFTP_Port)
 	Local $hFTPOpen = _FTP_Open("website")
-	Local $hFTPConn = _FTP_Connect($hFTPOpen, $tFTP_URL, $tFTP_UserName, $tFPT_Pwd)
+	Local $hFTPConn = _FTP_Connect($hFTPOpen, $tFTP_URL, $tFTP_UserName, $tFPT_Pwd, "", $tFTP_Port)
 	Local $hFTPDir = _FTP_DirSetCurrent($hFTPConn, $tFTP_Folder)
 	Local $xFileName = _PathSplit($tFile, "", "", "", "")
 	Local $tFileName = $xFileName[3] & $xFileName[4]
@@ -907,6 +910,11 @@ Func _GUI_Config()
 		GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 		GUICtrlSetTip(-1, "FTP upload resized images")
 		GUICtrlSetOnEvent(-1, "F_C_UploadResizedClick")
+		Global $F_L_FTPPort = GUICtrlCreateLabel("FTP Port", 64, 538 + $tY, 46, 17)
+		GUICtrlSetColor(-1, 0xFFFF00)
+		GUICtrlSetOnEvent(-1, "F_L_FTPPort")
+		Global $F_I_FTPPort = GUICtrlCreateInput("F_I_FTPPort", 115, 536 + $tY, 71, 21)
+		GUICtrlSetOnEvent(-1, "F_I_FTPPortChange")
 		GUICtrlCreateGroup("", -99, -99, 1, 1)
 		Global $G_FinishGroup = GUICtrlCreateGroup("Finish", 380, 586 + $tY, 203, 61)
 		GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
@@ -1154,6 +1162,7 @@ Func _UpdateFields($tCam = $aLastCam)
 	GUICtrlSetData($A_I_SaveFolder, $xSaveFolder[$aLastCam])
 	GUICtrlSetData($F_I_UploadFreq, $xIntervalFTP[$aLastCam])
 	GUICtrlSetData($F_I_FTPFolder, $xFTPFolder[$aLastCam])
+	GUICtrlSetData($F_I_FTPPort, $xFTPPort[$aLastCam])
 	GUICtrlSetData($F_I_Password, $xPwd[$aLastCam])
 	GUICtrlSetData($F_I_Username, $xUserID[$aLastCam])
 	If $aLogLevel = 1 Then
@@ -1409,6 +1418,11 @@ Func F_C_UploadResizedClick()
 	EndIf
 	IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "FTP Upload image: (F)ull-size (R)esized (B)oth (N)one (FRBN)###", $xFTPUploadType[$aLastCam])
 EndFunc   ;==>F_C_UploadResizedClick
+Func F_I_FTPPortChange() ;kim125er!
+	Local $tTxt = GUICtrlRead($F_I_FTPPort)
+	$xFTPPort[$aLastCam] = $tTxt
+	IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "FTP port ###", $xFTPPort[$aLastCam])
+EndFunc   ;==>F_I_FTPPortChange
 Func F_I_FTPFolderChange()
 	Local $tTxt = GUICtrlRead($F_I_FTPFolder)
 	$xFTPFolder[$aLastCam] = $tTxt
@@ -1428,11 +1442,9 @@ Func F_I_UploadFreqChange()
 	IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "Number of seconds between FTP uploads (5-86400) ###", $xIntervalFTP[$aLastCam])
 EndFunc   ;==>F_I_UploadFreqChange
 Func F_I_URLChange()
-	Local $tTxt = GUICtrlRead($F_I_URLChange)
-	If $tTxt <> "" Then
-		$xFTPURL[$aLastCam] = $tTxt
-		IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "FTP URL (for Wunderground, use webcam.wunderground.com) ###", $xFTPURL[$aLastCam])
-	EndIf
+	Local $tTxt = GUICtrlRead($F_I_URL) ;kim125er!
+	$xFTPURL[$aLastCam] = $tTxt
+	IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "FTP URL (for Wunderground, use webcam.wunderground.com) ###", $xFTPURL[$aLastCam])
 EndFunc   ;==>F_I_URLChange
 Func F_I_UsernameChange()
 	Local $tTxt = GUICtrlRead($F_I_Username)
