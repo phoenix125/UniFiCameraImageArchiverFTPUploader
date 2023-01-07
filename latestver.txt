@@ -1,3 +1,2 @@
-v1.4^v1.4 Added FTP Port
-- Added: FTP port assignment
-- Fixed: Error when changing URL in config window
+v1.5^v1.5 Added optional year/month folder save
+- Added: Optionally save images to folder with year/month name. ex) 2023-01
