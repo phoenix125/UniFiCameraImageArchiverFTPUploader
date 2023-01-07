@@ -1,5 +1,5 @@
 Ubiquiti UniFi Camera Image Archiver & FTP Uploader - A Utility to archive & FTP upload snapshot.jepgs from Ubiquiti cameras.
-- Latest version: UniFiCameraImageArchiverFTPUploader_v1.4 (2021-12-27)
+- Latest version: UniFiCameraImageArchiverFTPUploader_v1.5 (2023-01-07)
 - By Phoenix125 | http://www.Phoenix125.com | http://discord.gg/EU7pzPs | kim@kim125.com
 - Written in AutoIT v3.3.14.5 using SciTE4AutoIT3
 
@@ -39,6 +39,9 @@ Discord: http://discord.gg/EU7pzPs
 ------------------
  REVISION HISTORY
 ------------------
+2023-01 v1.5 Added optional year and month to save folder name
+- Added: Optionally save images to folder with year/month name. ex) 2023-01
+
 2021-12-27 v1.4 Added FTP Port Assignment Field
 - Added: FTP Port Assignment Field
 - Fixed: Line 1434 error when changing URL in config window

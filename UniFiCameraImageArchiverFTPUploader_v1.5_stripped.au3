@@ -15081,12 +15081,12 @@ Global Const $CDRF_SKIPPOSTPAINT = 0x00000100
 Global Const $GUI_SS_DEFAULT_GUI = BitOR($WS_MINIMIZEBOX, $WS_CAPTION, $WS_POPUP, $WS_SYSMENU)
 #Region
 #AutoIt3Wrapper_Icon=Resources\phoenixtray.ico
-#AutoIt3Wrapper_Outfile=Builds\UniFiCameraImageArchiverFTPUploader_v1.4.exe
+#AutoIt3Wrapper_Outfile=Builds\UniFiCameraImageArchiverFTPUploader_v1.5.exe
 #AutoIt3Wrapper_Res_Comment=UniFi Camera Image Archiver & FTP Uploader by Phoenix125.com
 #AutoIt3Wrapper_Res_Description=UniFi Camera Image Archiver & FTP Uploader
-#AutoIt3Wrapper_Res_Fileversion=1.4
+#AutoIt3Wrapper_Res_Fileversion=1.5
 #AutoIt3Wrapper_Res_ProductName=UniFi Camera Image Archiver & FTP Uploader
-#AutoIt3Wrapper_Res_ProductVersion=1.4
+#AutoIt3Wrapper_Res_ProductVersion=1.5
 #AutoIt3Wrapper_Res_CompanyName=http://www.Phoenix125.com
 #AutoIt3Wrapper_Res_LegalCopyright=http://www.Phoenix125.com
 #AutoIt3Wrapper_Res_Language=1033
@@ -15123,7 +15123,7 @@ Global $cBackgroundGray = "0x808080"
 Global $cGreenLime = "0x00FF00"
 Opt("GUIOnEventMode", 1)
 Local $tExit = False
-Global $aUtilVersion = "v1.4"
+Global $aUtilVersion = "v1.5"
 Global $aUtilVer = $aUtilVersion
 Global $aUtilVerNumber = 0
 Global $aIniFile = @ScriptDir & "\" & $aUtilName & ".ini"
@@ -15258,8 +15258,13 @@ Local $tFileNameExt = _AddLeadingZeros($tFileNameNumber, 6)
 $tFileNameSave = _LettersOnly($xFileNameSplit[3]) & "_" & $tFileNameExt & $xFileNameSplit[4]
 IniWrite($aUtilCFGFile, "CFG", "aCFGCam(" & $xCam & ")FileNameNumberF", $tFileNameNumber)
 EndIf
-DirCreate($xSaveFolder[$xCam])
-FileCopy($aFolderImage & "\" & $xFileNameOriginal[$xCam], $xSaveFolder[$xCam] & $tFileNameSave)
+If $xSaveMonthFolderYN[$xCam] = "yes" Then
+Local $tSaveFolder = $xSaveFolder[$xCam] & "\" & @YEAR & "-" & @MON & "\"
+Else
+Local $tSaveFolder = $xSaveFolder[$xCam]
+EndIf
+DirCreate($tSaveFolder)
+FileCopy($aFolderImage & "\" & $xFileNameOriginal[$xCam], $tSaveFolder & $tFileNameSave)
 EndIf
 If (StringInStr($xSaveType[$xCam], "B") Or StringInStr($xSaveType[$xCam], "R")) And $xResizeImageYN[$xCam] = "yes" Then
 Local $xFileNameSplit = _PathSplit($aFolderImage & "\" & $xFileNameResized[$xCam], "", "", "", "")
@@ -15272,7 +15277,12 @@ Local $tFileNameExt = _AddLeadingZeros($tFileNameNumber, 6)
 $tFileNameSave = _LettersOnly($xFileNameSplit[3]) & "_" & $tFileNameExt & $xFileNameSplit[4]
 IniWrite($aUtilCFGFile, "CFG", "aCFGCam(" & $xCam & ")FileNameNumberR", $tFileNameNumber)
 EndIf
-FileCopy($aFolderImage & "\" & $xFileNameResized[$xCam], $xSaveFolder[$xCam] & $tFileNameSave)
+If $xSaveMonthFolderYN[$xCam] = "yes" Then
+Local $tSaveFolder = $xSaveFolder[$xCam] & "\" & @YEAR & "-" & @MON & "\"
+Else
+Local $tSaveFolder = $xSaveFolder[$xCam]
+EndIf
+FileCopy($aFolderImage & "\" & $xFileNameResized[$xCam], $tSaveFolder & $tFileNameSave)
 EndIf
 EndIf
 If $tDiffFTP And $tErrorImageSave = False Then
@@ -15373,6 +15383,7 @@ Global $xSaveType[$aNumberOfEntries]
 Global $xFTPUploadType[$aNumberOfEntries]
 Global $xSaveFileNumberYN[$aNumberOfEntries]
 Global $xSaveFolder[$aNumberOfEntries]
+Global $xSaveMonthFolderYN[$aNumberOfEntries]
 For $x = 0 To ($aNumberOfEntries - 1)
 $xNotes[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Note (optional for comment in this config file) ###", "Camera " & $x + 1)
 $xCameraEnableYN[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Camera Enabled (yes/no) ###", "no")
@@ -15393,6 +15404,7 @@ $xFTPUploadType[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & "
 $xSaveFileNumberYN[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "For archived images filename, use sequential numbers (i.e. 00000-99999) instead of date? (yes/no) ###", "no")
 $xSaveFolder[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Save Folder for archived image(s) ###", @ScriptDir & "\Images\")
 $xSaveFolder[$x] = _RemoveTrailingSlash($xSaveFolder[$x]) & "\"
+$xSaveMonthFolderYN[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Save images in folder by month (ex 2023-01)? (yes/no) ###", "yes")
 DirCreate($xSaveFolder[$x])
 If $xResizeImageSize[$x] <> "" Then
 Local $xImageSplit = StringSplit($xResizeImageSize[$x], "x", 2)
@@ -15435,6 +15447,7 @@ IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "
 IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "FTP Upload image: (F)ull-size (R)esized (B)oth (N)one (FRBN)###", $xFTPUploadType[$x])
 IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "For archived images filename, use sequential numbers (i.e. 00000-99999) instead of date? (yes/no) ###", $xSaveFileNumberYN[$x])
 IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Save Folder for archived image(s) ###", $xSaveFolder[$x])
+IniWrite($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Save images in folder by month (ex 2023-01)? (yes/no) ###", $xSaveMonthFolderYN[$x])
 Next
 EndFunc
 Func FTPFiles($tFile, $tFTP_Folder, $tFTP_URL, $tFTP_UserName, $tFPT_Pwd, $tFTP_Port)
@@ -16086,6 +16099,10 @@ Global $A_C_ArchiveResized = GUICtrlCreateCheckbox("Archive Resized Images", 32,
 GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetTip(-1, "Archive (save a copy of) resized images. Date or sequential number will be added to end of filename.")
 GUICtrlSetOnEvent(-1, "A_C_ArchiveResizedClick")
+Global $A_C_SaveInYearFoldersClick = GUICtrlCreateCheckbox("Save in YEAR-MO Folders", 32, 360 + $tY, 150, 17)
+GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+GUICtrlSetTip(-1, "Save images in folders with year-month. ex) 2022-01")
+GUICtrlSetOnEvent(-1, "A_C_SaveInYearFoldersClick")
 Global $A_B_SelectSaveFolder = GUICtrlCreateButton("Select Folder", 792, 342 + $tY, 75, 25)
 GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetTip(-1, "Folder to save archived images")
@@ -16243,6 +16260,11 @@ GUICtrlSetState($O_C_CheckForUpdates, $GUI_CHECKED)
 Else
 GUICtrlSetState($O_C_CheckForUpdates, $GUI_UNCHECKED)
 EndIf
+If $xSaveMonthFolderYN[$tCam] = "yes" Then
+GUICtrlSetState($A_C_SaveInYearFoldersClick, $GUI_CHECKED)
+Else
+GUICtrlSetState($A_C_SaveInYearFoldersClick, $GUI_UNCHECKED)
+EndIf
 If $xSaveType[$aLastCam] = "B" Then
 GUICtrlSetState($A_C_ArchiveFullSize, $GUI_CHECKED)
 GUICtrlSetState($A_C_ArchiveResized, $GUI_CHECKED)
@@ -16330,6 +16352,14 @@ If $xSaveType[$aLastCam] = "R" Then $xSaveType[$aLastCam] = "N"
 If $xSaveType[$aLastCam] = "B" Then $xSaveType[$aLastCam] = "F"
 EndIf
 IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "Archive image: (F)ull-size (R)esized (B)oth (N)one (FRBN)###", $xSaveType[$aLastCam])
+EndFunc
+Func A_C_SaveInYearFoldersClick()
+If GUICtrlRead($A_C_SaveInYearFoldersClick) = $GUI_CHECKED Then
+$xSaveMonthFolderYN[$aLastCam] = "yes"
+Else
+$xSaveMonthFolderYN[$aLastCam] = "no"
+EndIf
+IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "Save images in folder by month (ex 2023-01)? (yes/no) ###", $xSaveMonthFolderYN[$aLastCam])
 EndFunc
 Func A_I_FrequencyChange()
 Local $tTxt = GUICtrlRead($A_I_Frequency)
