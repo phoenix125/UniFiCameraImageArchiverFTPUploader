@@ -218,6 +218,7 @@ Do
 					Else
 						Local $tSaveFolder = $xSaveFolder[$xCam]
 					EndIf
+					DirCreate($tSaveFolder)
 					FileCopy($aFolderImage & "\" & $xFileNameResized[$xCam], $tSaveFolder & $tFileNameSave)
 				EndIf
 			EndIf
@@ -342,6 +343,7 @@ Func ReadIni()
 		$xSaveFolder[$x] = _RemoveTrailingSlash($xSaveFolder[$x]) & "\"
 		$xSaveMonthFolderYN[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Save images in folder by month (ex 2023-01)? (yes/no) ###", "yes")
 		DirCreate($xSaveFolder[$x])
+		If $xSaveMonthFolderYN = "yes" Then DirCreate($xSaveFolder[$x])
 		If $xResizeImageSize[$x] <> "" Then
 			Local $xImageSplit = StringSplit($xResizeImageSize[$x], "x", 2)
 			If StringInStr($xResizeImageSize[$x], "x") = 0 Or UBound($xImageSplit) <> 2 Then LogWrite("[Error] Resize image dimension for camera " & $x + 1 & " formated improperly. [" & $xResizeImageSize[$x] & "]")
@@ -1448,7 +1450,7 @@ Func F_C_UploadResizedClick()
 	EndIf
 	IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "FTP Upload image: (F)ull-size (R)esized (B)oth (N)one (FRBN)###", $xFTPUploadType[$aLastCam])
 EndFunc   ;==>F_C_UploadResizedClick
-Func F_I_FTPPortChange() ;kim125er!
+Func F_I_FTPPortChange()
 	Local $tTxt = GUICtrlRead($F_I_FTPPort)
 	$xFTPPort[$aLastCam] = $tTxt
 	IniWrite($aIniFile, " --------------- CAMERA " & $aLastCam + 1 & " --------------- ", "FTP port ###", $xFTPPort[$aLastCam])

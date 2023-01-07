@@ -15282,6 +15282,7 @@ Local $tSaveFolder = $xSaveFolder[$xCam] & "\" & @YEAR & "-" & @MON & "\"
 Else
 Local $tSaveFolder = $xSaveFolder[$xCam]
 EndIf
+DirCreate($tSaveFolder)
 FileCopy($aFolderImage & "\" & $xFileNameResized[$xCam], $tSaveFolder & $tFileNameSave)
 EndIf
 EndIf
@@ -15406,6 +15407,7 @@ $xSaveFolder[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --
 $xSaveFolder[$x] = _RemoveTrailingSlash($xSaveFolder[$x]) & "\"
 $xSaveMonthFolderYN[$x] = IniRead($aIniFile, " --------------- CAMERA " & $x + 1 & " --------------- ", "Save images in folder by month (ex 2023-01)? (yes/no) ###", "yes")
 DirCreate($xSaveFolder[$x])
+If $xSaveMonthFolderYN = "yes" Then DirCreate($xSaveFolder[$x])
 If $xResizeImageSize[$x] <> "" Then
 Local $xImageSplit = StringSplit($xResizeImageSize[$x], "x", 2)
 If StringInStr($xResizeImageSize[$x], "x") = 0 Or UBound($xImageSplit) <> 2 Then LogWrite("[Error] Resize image dimension for camera " & $x + 1 & " formated improperly. [" & $xResizeImageSize[$x] & "]")
